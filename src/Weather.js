@@ -1,6 +1,8 @@
 import React, { useState } from "react";
+import FormattedDate from "./FormattedDate.js";
 import axios from "axios";
 import "./Weather.css";
+
 
 export default function Weather() {
     let [weatherData, setWeatherData] = useState({ ready: false });
@@ -12,7 +14,7 @@ export default function Weather() {
             temp: response.data.main.temp,
             wind: response.data.wind.speed,
             city: response.data.name,
-            date: "Wednesday 07:00",
+            date: new Date(response.data.dt * 1000),
             humidity: response.data.main.humidity,
             iconUrl: "https://www.gstatic.com/weather/conditions/v1/svg/sunny_light.svg",
             description: weatherData.data.weather[0].description
@@ -24,8 +26,9 @@ export default function Weather() {
     let apiUrl = 'https://api.shecodes.io/weather/v1/current?query=${city}&key=${apiKey}&units=metric';
     axios.get(apiUrl).then(handleResponse);
 
-    if (weatherData.ready) {
-    return <div className="Weather">
+    if (weatherData.ready) {  
+    return (
+    <div className="Weather">
         <form>
             <div className="row">
                 <div className="col-9">
@@ -39,7 +42,7 @@ export default function Weather() {
         
         <h1>{weatherData.city}</h1>
         <ul>
-            <li>{weatherData.date}</li>
+            <li><FormattedDate date={weatherData.date}></li>
             <li className="text-capitalize">{weatherData.description}</li>
         </ul>
         <div className="row mt-3">
@@ -63,7 +66,8 @@ export default function Weather() {
                 </ul>
             </div>
     </div>
-    ;
+    );
+    
 } else {
 
     let city = "Glasgow"
