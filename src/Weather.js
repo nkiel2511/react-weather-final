@@ -1,7 +1,30 @@
-import React from "react";
+import React, { useState } from "react";
+import axios from "axios";
 import "./Weather.css";
 
 export default function Weather() {
+    let [weatherData, setWeatherData] = useState({ ready: false });
+
+    function handleResponse(response) {
+        console.log(response.data);
+        setWeatherData({
+            ready: true,
+            temp: response.data.main.temp,
+            wind: response.data.wind.speed,
+            city: response.data.name,
+            date: "Wednesday 07:00",
+            humidity: response.data.main.humidity,
+            iconUrl: "https://www.gstatic.com/weather/conditions/v1/svg/sunny_light.svg",
+            description: weatherData.data.weather[0].description
+        });
+    }
+
+    let city = "Glasgow"
+    let apiKey = "7ff3c5ef4330987abab23faeo62t9ee4";
+    let apiUrl = 'https://api.shecodes.io/weather/v1/current?query=${city}&key=${apiKey}&units=metric';
+    axios.get(apiUrl).then(handleResponse);
+
+    if (weatherData.ready) {
     return <div className="Weather">
         <form>
             <div className="row">
@@ -14,19 +37,20 @@ export default function Weather() {
         </div>
         </form>
         
-        <h1>Glasgow</h1>
+        <h1>{weatherData.city}</h1>
         <ul>
-            <li>Wednesday 07:00</li>
-            <li>Mostly cloudy </li>
+            <li>{weatherData.date}</li>
+            <li className="text-capitalize">{weatherData.description}</li>
         </ul>
         <div className="row mt-3">
           <div className="col-6">
              <div className="clearfix">
-                <img src="https://www.gstatic.com/weather/conditions/v1/svg/sunny_light.svg"
-                alt="Mostly Cloudy"
+                <img src={weatherData.iconUrl}
+                alt={weatherData.description}
                 className="float-left"/>
         
-                <span className="temp float-left">6</span>
+        
+                <span className="temp float-left">{Math.round(weatherData.temp)}</span>
                 <span className="unit float-left">°C</span>
 
               </div>
@@ -34,10 +58,20 @@ export default function Weather() {
         </div>
             <div className="col-6">
                 <ul>
-                    <li>Percipitation: 15%</li>
-                    <li>Humidity: 62%</li>
-                    <li>Wind: 13 km/h</li>
+                    <li>Humidity: {weatherData.humidity}</li>
+                    <li>Wind: {weatherData.wind}</li>
                 </ul>
             </div>
-    </div>;
+    </div>
+    ;
+} else {
+
+    let city = "Glasgow"
+    let apiKey = "7ff3c5ef4330987abab23faeo62t9ee4";
+    let apiUrl = 'https://api.shecodes.io/weather/v1/current?query=${props.defaultCity}&key=${apiKey}&units=metric';
+    axios.get(apiUrl).then(handleResponse);
+
+    return "Loading ..."
+
+}
 }
