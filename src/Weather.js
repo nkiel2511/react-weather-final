@@ -1,25 +1,26 @@
 import React, { useState } from "react";
 import WeatherInfo from "./WeatherInfo.js";
+import App from "./App.js";
 
 import axios from "axios";
 import "./Weather.css";
 
 
-export default function Weather() {
+export default function Weather(props) {
     const [weatherData, setWeatherData] = useState({ ready: false });
-    const [city, setCity] = useState(props.defaultCity);
+    const [city, setCity] = useState(props.value);
 
     function handleResponse(response) {
         console.log(response.data);
         setWeatherData({
             ready: true,
-            temp: response.data.main.temp,
+            temp: response.data.temperature.current,
             wind: response.data.wind.speed,
-            city: response.data.name,
-            date: new Date(response.data.dt * 1000),
-            humidity: response.data.main.humidity,
-            iconUrl: "https://www.gstatic.com/weather/conditions/v1/svg/sunny_light.svg",
-            description: weatherData.data.weather[0].description
+            city: response.data.city,
+            date: new Date(response.data.time * 1000),
+            humidity: response.data.temperature.humidity,
+            icon: response.data.condition.icon,
+            description: response.data.condition.description
         });
     }
 
@@ -42,7 +43,7 @@ export default function Weather() {
     if (weatherData.ready) {  
     return (
     <div className="Weather">
-        <form onSubmit={hanldeSubmit}>
+        <form onSubmit={handleSubmit}>
             <div className="row">
                 <div className="col-9">
             <input type="search" placeholder="Enter a city ..." className="form-control" autoFocus="on" onChange={handleCityChange}/>
