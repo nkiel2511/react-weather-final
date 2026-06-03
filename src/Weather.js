@@ -10,19 +10,22 @@ export default function Weather(props) {
     const [weatherData, setWeatherData] = useState({ ready: false });
     const [city, setCity] = useState(props.value);
 
-    function handleResponse(response) {
-        console.log(response.data);
-        setWeatherData({
-            ready: true,
-            temp: response.data.temperature.current,
-            wind: response.data.wind.speed,
-            city: response.data.city,
-            date: new Date(response.data.time * 1000),
-            humidity: response.data.temperature.humidity,
-            icon: response.data.condition.icon,
-            description: response.data.condition.description
-        });
-    }
+
+
+      function handleResponse(response) {
+    setWeatherData({
+      ready: true,
+      coordinates: response.data.coord,
+      temp: response.data.main.temp,
+      humidity: response.data.main.humidity,
+      date: new Date(response.data.dt * 1000),
+      description: response.data.weather[0].description,
+      icon: response.data.weather[0].icon,
+      wind: response.data.wind.speed,
+      city: response.data.name,
+    });
+  }
+
 
     function search() {
       let apiKey = "7ff3c5ef4330987abab23faeo62t9ee4";
